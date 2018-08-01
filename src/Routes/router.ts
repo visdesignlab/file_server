@@ -1,11 +1,8 @@
 import { Router } from "express";
+import { uploadRoute } from "./uploadRoute";
 
 export function BuildRouter() {
   let router = Router();
-  router.get("/", (req, res) => {
-    res.json({
-      message: "Hello, World!"
-    });
-  });
+  uploadRoute(router);
   return router;
 }
