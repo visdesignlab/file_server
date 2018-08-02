@@ -22,14 +22,9 @@ export function uploadRoute(router: Router) {
     limits: {
       fileSize: 5120000
     }
-  }).single("file");
+  });
 
-  router.post("/upload", (req, res) => {
-    upload(req, res, err => {
-      if (err) return console.error(err);
-      return console.log("File Uploaded");
-    });
-
+  router.post("/upload", upload.single("file"), (req, res) => {
     res.json({
       message: "File Uploaded"
     });
