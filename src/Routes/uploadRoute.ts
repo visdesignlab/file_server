@@ -31,6 +31,6 @@ export function uploadRoute(router: Router) {
   });
 
   router.get("/upload", (req, res) => {
-    console.log("Update");
+    res.send({ message: "Update" });
   });
 }
