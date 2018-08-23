@@ -1,8 +1,13 @@
 import { Router } from "express-serve-static-core";
 import * as multer from "multer";
 import * as path from "path";
+import * as fs from "fs";
 
 export function uploadRoute(router: Router) {
+  if (!fs.existsSync("./uploads")) {
+    fs.mkdirSync("./uploads");
+  }
+
   let storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, "uploads");
@@ -24,13 +29,21 @@ export function uploadRoute(router: Router) {
     }
   });
 
-  router.post("/upload", upload.single("file"), (req, res) => {
-    res.json({
-      message: "File Uploaded"
-    });
-  });
+  router.post("/upload/single", upload.single("file"), (req, res) => {
+    let jsonFileName = `${path.basename(req.file.filename, ".pdf")}.json`;
+    let metadata = JSON.parse(req.body.metadata);
 
-  router.get("/upload", (req, res) => {
-    res.send({ message: "Update" });
+    fs.writeFile(
+      `./uploads/${jsonFileName}`,
+      JSON.stringify(metadata),
+      "utf8",
+      err => {
+        if (err) throw err;
+      }
+    );
+
+    res.json({
+      message: jsonFileName
+    });
   });
 }
