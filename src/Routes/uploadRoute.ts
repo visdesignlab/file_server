@@ -1,7 +1,10 @@
+import { Metadata, ParseMetadata } from './../DataStructures/Metadata';
+import { DatasetInfo, isValidDatasetInfo, parseToDatasetInfo } from './../DataStructures/DatasetInfo';
 import { Router } from "express-serve-static-core";
 import * as multer from "multer";
 import * as path from "path";
 import * as fs from "fs";
+import * as express from 'express';
 
 export function uploadRoute(router: Router) {
   if (!fs.existsSync("./uploads")) {
@@ -30,8 +33,17 @@ export function uploadRoute(router: Router) {
   });
 
   router.post("/upload/single", upload.single("file"), (req, res) => {
-    let jsonFileName = `${path.basename(req.file.filename, ".pdf")}.json`;
-    let metadata = JSON.parse(req.body.metadata);
+    let jsonFileName = `${path.basename(req.file.filename, path.extname(req.file.filename))}.json`;
+    let datasetinfo: DatasetInfo = JSON.parse(req.body.metadata);
+    if (!isValidDatasetInfo(datasetinfo)){
+      fs.unlink(`./uploads/${req.file.filename}`, (err)=>{
+      });
+      res.status(400).json(datasetinfo);
+      return;
+    }
+
+    datasetinfo.file = `${req.file.filename}`;
+    let metadata: Metadata = ParseMetadata(req.file, datasetinfo);
 
     fs.writeFile(
       `./uploads/${jsonFileName}`,
@@ -43,7 +55,9 @@ export function uploadRoute(router: Router) {
     );
 
     res.json({
-      message: jsonFileName
+      message: jsonFileName  
     });
   });
 }
+
+
