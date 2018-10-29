@@ -16,7 +16,9 @@ export function downloadRoute(router: Router) {
     readDir(folder).then(files => {
       let readPromises = files.filter(f => path.extname(f) === ".json").map(f => read(`${folder}/${f}`, 'utf-8'));
       Promise.all(readPromises).then(f => {
-        res.json(f.map(_ => getMetadatafromStoredMetadata(parseToStoredMetadata(_))));
+        res.json({
+          test : f.map(_ => getMetadatafromStoredMetadata(parseToStoredMetadata(_)))
+        });
       })
     });
   });

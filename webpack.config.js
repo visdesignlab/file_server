@@ -33,5 +33,4 @@ module.exports = {
     }]
   },
   externals: nodeModules,
-  watch: true
 };
