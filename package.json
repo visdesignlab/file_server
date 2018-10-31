@@ -4,8 +4,8 @@
   "description": "A server for handling file uploads and downloads.",
   "main": "server.js",
   "scripts": {
-    "build-once" : "webpack",
-    "build": "webpack  -w",
+    "build-once": "npm install && webpack",
+    "build": "npm install && webpack  -w",
     "server": "nodemon server.js"
   },
   "repository": {
